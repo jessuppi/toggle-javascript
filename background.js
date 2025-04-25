@@ -1,27 +1,41 @@
-const ICON_ON = "icon-on.png";
-const ICON_OFF = "icon-off.png";
+const ICON_JS_ENABLED = "icon-js-enabled.png"
+const ICON_JS_DISABLED = "icon-js-disabled.png"
 
-chrome.action.onClicked.addListener(async (tab) => {
-  if (!tab.url || !tab.id) return;
+chrome.action.onClicked.addListener((tab) => {
+  // validate the tab and its url
+  if (!tab || !tab.url || !tab.id) return
 
-  const url = new URL(tab.url);
-  const domain = url.hostname;
+  // extract domain from the tab url
+  let domain
+  try {
+    const url = new URL(tab.url)
+    domain = url.hostname
+  } catch (error) {
+    // skip if the url is invalid or unsupported like chrome:// or about:blank
+    return
+  }
 
-  chrome.storage.local.get(domain, (data) => {
-    const jsEnabled = !data[domain];
+  // retrieve the stored javascript setting
+  chrome.storage.local.get(domain, (stored) => {
+    const isDisabled = Boolean(stored[domain])
+    const isEnabled = !isDisabled
 
+    // set javascript permission for the domain
     chrome.contentSettings.javascript.set({
       primaryPattern: `*://${domain}/*`,
-      setting: jsEnabled ? "allow" : "block"
-    });
+      setting: isEnabled ? "allow" : "block"
+    })
 
-    chrome.storage.local.set({ [domain]: !jsEnabled });
+    // save the updated toggle state
+    chrome.storage.local.set({ [domain]: !isEnabled })
 
+    // update the toolbar icon
     chrome.action.setIcon({
       tabId: tab.id,
-      path: jsEnabled ? ICON_ON : ICON_OFF
-    });
+      path: isEnabled ? ICON_JS_ENABLED : ICON_JS_DISABLED
+    })
 
-    chrome.tabs.reload(tab.id);
-  });
-});
+    // reload the current tab
+    chrome.tabs.reload(tab.id)
+  })
+})
