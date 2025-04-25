@@ -15,24 +15,20 @@ chrome.action.onClicked.addListener((tab) => {
     return
   }
 
-  // retrieve the stored javascript setting
-  chrome.storage.local.get(domain, (stored) => {
-    const isDisabled = Boolean(stored[domain])
-    const isEnabled = !isDisabled
+  // get current javascript permission for the site
+  chrome.contentSettings.javascript.get({ primaryUrl: tab.url }, (details) => {
+    const isEnabled = details.setting === "allow"
 
-    // set javascript permission for the domain
+    // toggle the javascript permission
     chrome.contentSettings.javascript.set({
       primaryPattern: `*://${domain}/*`,
-      setting: isEnabled ? "allow" : "block"
+      setting: isEnabled ? "block" : "allow"
     })
-
-    // save the updated toggle state
-    chrome.storage.local.set({ [domain]: !isEnabled })
 
     // update the toolbar icon
     chrome.action.setIcon({
       tabId: tab.id,
-      path: isEnabled ? ICON_JS_ENABLED : ICON_JS_DISABLED
+      path: isEnabled ? ICON_JS_DISABLED : ICON_JS_ENABLED
     })
 
     // reload the current tab
