@@ -25,12 +25,6 @@ chrome.action.onClicked.addListener((tab) => {
       setting: isEnabled ? "block" : "allow"
     })
 
-    // update the toolbar icon
-    chrome.action.setIcon({
-      tabId: tab.id,
-      path: isEnabled ? ICON_JS_DISABLED : ICON_JS_ENABLED
-    })
-
     // reload the current tab
     chrome.tabs.reload(tab.id)
   })
