@@ -35,3 +35,27 @@ chrome.action.onClicked.addListener((tab) => {
     chrome.tabs.reload(tab.id)
   })
 })
+
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  // check when the tab has fully loaded
+  if (changeInfo.status === "complete") {
+    try {
+      // extract domain from the tab url
+      const url = new URL(tab.url)
+      const domain = url.hostname
+
+      // get current javascript permission for the site
+      chrome.contentSettings.javascript.get({ primaryUrl: tab.url }, (details) => {
+        const isEnabled = details.setting !== "block"
+
+        // update the toolbar icon
+        chrome.action.setIcon({
+          tabId: tabId,
+          path: isEnabled ? ICON_JS_ENABLED : ICON_JS_DISABLED
+        })
+      })
+    } catch (error) {
+      // skip if the url is invalid or unsupported like chrome:// or about:blank
+    }
+  }
+})
