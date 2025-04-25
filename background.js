@@ -17,7 +17,7 @@ chrome.action.onClicked.addListener((tab) => {
 
   // get current javascript permission for the site
   chrome.contentSettings.javascript.get({ primaryUrl: tab.url }, (details) => {
-    const isEnabled = details.setting === "allow"
+    const isEnabled = details.setting !== "block"
 
     // toggle the javascript permission
     chrome.contentSettings.javascript.set({
