@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Toggle JavaScript",
   "version": "1.0.0",
-  "description": "Quickly enable or disable JavaScript per site with a single click. Lightweight, clean, and open-source.",
+  "description": "Quickly enable or disable JavaScript per site with a single click using this lightweight and open-source tool for easy debugging and privacy.",
   "permissions": [
     "tabs",
     "contentSettings"
