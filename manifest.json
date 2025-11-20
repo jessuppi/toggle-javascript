@@ -7,10 +7,6 @@
     "tabs",
     "contentSettings"
   ],
-  "host_permissions": [
-    "http://*/*",
-    "https://*/*"
-  ],
   "action": {
     "default_title": "Toggle JavaScript",
     "default_icon": {
