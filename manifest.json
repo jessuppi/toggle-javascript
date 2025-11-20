@@ -1,11 +1,15 @@
 {
   "manifest_version": 3,
   "name": "Toggle JavaScript",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Quickly enable or disable JavaScript per site with a single click using this lightweight tool for easy debugging and privacy.",
   "permissions": [
     "tabs",
     "contentSettings"
+  ],
+  "host_permissions": [
+    "http://*/*",
+    "https://*/*"
   ],
   "action": {
     "default_title": "Toggle JavaScript",
