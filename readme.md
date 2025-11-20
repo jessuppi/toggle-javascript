@@ -4,6 +4,12 @@ Quickly enable or disable JavaScript per site with a single click using this lig
 
 ## Changelog
 
+### 2.0.0
+- updated background script to use modern Promise-based APIs for Manifest V3
+- fixed issue where JavaScript toggle stopped working in recent Chrome releases
+- added proper handling of non-http/https pages to prevent console errors
+- general code cleanup for stability and future-proofing
+
 ### 1.0.0
 - initial release
 - enable or disable javascript per site with one click
