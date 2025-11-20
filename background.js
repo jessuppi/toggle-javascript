@@ -1,4 +1,3 @@
-// icon paths for toolbar button
 const ICON_JS_ENABLED = "icon-js-enabled.png"
 const ICON_JS_DISABLED = "icon-js-disabled.png"
 
@@ -40,7 +39,6 @@ chrome.action.onClicked.addListener(async (tab) => {
   }
 })
 
-
 // update icon when tab finishes loading
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
   if (changeInfo.status !== "complete" || !tab || !tab.url) return
@@ -65,4 +63,3 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
     console.error("error updating javascript icon:", error)
   }
 })
-
