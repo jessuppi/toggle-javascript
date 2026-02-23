@@ -4,6 +4,11 @@ Quickly enable or disable JavaScript per site with a single click using this lig
 
 ## Changelog
 
+### 2.1.0
+- improved toolbar icon accuracy when switching between tabs
+- added `chrome.tabs.onActivated` listener to refresh icon state on active tab change
+- improved tab id safety check using `tab.id == null` for better MV3 reliability
+
 ### 2.0.0
 - updated background script to use modern Promise-based APIs for Manifest V3
 - fixed issue where JavaScript toggle stopped working in recent Chrome releases
