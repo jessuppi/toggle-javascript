@@ -14,9 +14,32 @@ async function setJsSettingForPattern(pattern, setting) {
   })
 }
 
+// update icon for a tab based on current javascript setting
+async function updateTabIcon(tabId, tabUrl) {
+  // handle http/https urls only
+  try {
+    const url = new URL(tabUrl)
+    if (url.protocol !== "http:" && url.protocol !== "https:") return
+  } catch {
+    return
+  }
+
+  // set correct icon based on current javascript permission
+  try {
+    const details = await getJsSettingForUrl(tabUrl)
+    const isEnabled = details.setting !== "block"
+    await chrome.action.setIcon({
+      tabId,
+      path: isEnabled ? ICON_JS_ENABLED : ICON_JS_DISABLED
+    })
+  } catch (error) {
+    console.error("error updating javascript icon:", error)
+  }
+}
+
 // toggle javascript on click for the active tab
 chrome.action.onClicked.addListener(async (tab) => {
-  if (!tab || !tab.url || !tab.id) return
+  if (!tab || !tab.url || tab.id == null) return
 
   // extract domain from http/https urls only
   let domain
@@ -42,24 +65,16 @@ chrome.action.onClicked.addListener(async (tab) => {
 // update icon when tab finishes loading
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
   if (changeInfo.status !== "complete" || !tab || !tab.url) return
+  await updateTabIcon(tabId, tab.url)
+})
 
-  // handle http/https urls only
+// update icon when switching tabs
+chrome.tabs.onActivated.addListener(async ({ tabId }) => {
   try {
-    const url = new URL(tab.url)
-    if (url.protocol !== "http:" && url.protocol !== "https:") return
-  } catch {
-    return
-  }
-
-  // set correct icon based on current javascript permission
-  try {
-    const details = await getJsSettingForUrl(tab.url)
-    const isEnabled = details.setting !== "block"
-    await chrome.action.setIcon({
-      tabId,
-      path: isEnabled ? ICON_JS_ENABLED : ICON_JS_DISABLED
-    })
+    const tab = await chrome.tabs.get(tabId)
+    if (!tab || !tab.url) return
+    await updateTabIcon(tabId, tab.url)
   } catch (error) {
-    console.error("error updating javascript icon:", error)
+    console.error("error updating icon on tab activation:", error)
   }
 })
