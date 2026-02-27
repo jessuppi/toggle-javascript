@@ -4,6 +4,11 @@ Quickly enable or disable JavaScript per site with a single click using this lig
 
 ## Changelog
 
+### 2.2.0
+- improved toolbar icon responsiveness when toggling JavaScript
+- updates the active tab icon immediately after changing the site setting
+- keeps icon feedback more consistent before the page reload completes
+
 ### 2.1.0
 - improved toolbar icon accuracy when switching between tabs
 - added `chrome.tabs.onActivated` listener to refresh icon state on active tab change
