@@ -16,7 +16,7 @@ async function setJsSettingForPattern(pattern, setting) {
 
 // update icon for a tab based on current javascript setting
 async function updateTabIcon(tabId, tabUrl) {
-  // handle http/https urls only
+  // handle http and https urls only
   try {
     const url = new URL(tabUrl)
     if (url.protocol !== "http:" && url.protocol !== "https:") return
@@ -41,7 +41,7 @@ async function updateTabIcon(tabId, tabUrl) {
 chrome.action.onClicked.addListener(async (tab) => {
   if (!tab || !tab.url || tab.id == null) return
 
-  // extract domain from http/https urls only
+  // extract domain from http and https urls only
   let domain
   try {
     const url = new URL(tab.url)
@@ -51,11 +51,19 @@ chrome.action.onClicked.addListener(async (tab) => {
     return
   }
 
-  // toggle javascript permission and reload tab
+  // toggle javascript permission then update icon immediately then reload tab
   try {
     const details = await getJsSettingForUrl(tab.url)
     const isEnabled = details.setting !== "block"
-    await setJsSettingForPattern(`*://${domain}/*`, isEnabled ? "block" : "allow")
+    const newSetting = isEnabled ? "block" : "allow"
+
+    await setJsSettingForPattern(`*://${domain}/*`, newSetting)
+
+    await chrome.action.setIcon({
+      tabId: tab.id,
+      path: newSetting === "block" ? ICON_JS_DISABLED : ICON_JS_ENABLED
+    })
+
     chrome.tabs.reload(tab.id)
   } catch (error) {
     console.error("error toggling javascript:", error)
