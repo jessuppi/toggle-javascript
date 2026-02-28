@@ -4,6 +4,11 @@ Quickly enable or disable JavaScript per site with a single click using this lig
 
 ## Changelog
 
+### 2.3.0
+- reverted immediate toolbar icon updates during toggle
+- restored previous icon refresh behavior to avoid flicker during page reload
+- keeps toolbar icon updates handled by tab activation and page load events
+
 ### 2.2.0
 - improved toolbar icon responsiveness when toggling JavaScript
 - updates the active tab icon immediately after changing the site setting
