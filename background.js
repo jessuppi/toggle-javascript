@@ -51,19 +51,11 @@ chrome.action.onClicked.addListener(async (tab) => {
     return
   }
 
-  // toggle javascript permission then update icon immediately then reload tab
+  // toggle javascript permission and reload tab
   try {
     const details = await getJsSettingForUrl(tab.url)
     const isEnabled = details.setting !== "block"
-    const newSetting = isEnabled ? "block" : "allow"
-
-    await setJsSettingForPattern(`*://${domain}/*`, newSetting)
-
-    await chrome.action.setIcon({
-      tabId: tab.id,
-      path: newSetting === "block" ? ICON_JS_DISABLED : ICON_JS_ENABLED
-    })
-
+    await setJsSettingForPattern(`*://${domain}/*`, isEnabled ? "block" : "allow")
     chrome.tabs.reload(tab.id)
   } catch (error) {
     console.error("error toggling javascript:", error)
